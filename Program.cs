@@ -4,196 +4,159 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeTask6_Q2_
+namespace HomeTask6_Q1_
 {
-   
-        public class Shape
+
+    public class product
+    {
+        public int ProductId;
+        public string Name;
+        public decimal Price;
+        public int QuantityinStock;
+
+        //Chaining Method 1
+        public void CheckQuantityinStock(int quantityinStock)
         {
-            private int shapeID;
-            private string shapeType;
-            private string colour;
-
-            //Properties
-            public int ID_of_Shape
+            if (quantityinStock >= 0 && quantityinStock <= 100)
             {
-                get { return shapeID; }
-                set { shapeID = value; }
-            }
-            public string Type_of_Shape
-            {
-                get { return shapeType; }
-                set { shapeType = value; }
-            }
-            public string Colour_of_Shape
-            {
-                get { return colour; }
-                set { colour = value; }
-            }
-            public Shape(int shapeID, string shapeType, string colour)
-            {
-                this.shapeID = shapeID;
-                this.shapeType = shapeType;
-                this.colour = colour;
-
-            }
-            //Overloading Constructor for deep Copy
-            public Shape(Shape other)
-            {
-                shapeID = other.shapeID;
-                shapeType = other.shapeType;
-                colour = other.colour;
-            }
-
-            //Method to draw a shape
-
-            public void Draw()
-            {
-                Console.WriteLine($"Shape ID : {shapeID},Shape Type :{shapeType},Colour :{colour}");
-            }
-
-            //Destructor
-
-            ~Shape()
-            {
-                Console.WriteLine($"Shape with Id {shapeID} is Terminated ");
-            }
-        }
-        public class Canvas
-        {
-        private int canvasId;
-        private Shape[] shapes;
-        private int ShapeCount;
-
-        //property
-        public int ID_of_canvas
-            { get { return canvasId; } set { canvasId = value; } }
-        //Constructor
-        public Canvas(int Id)
-        {
-            canvasId = Id;
-            shapes = new Shape[10];
-            ShapeCount = 0;
-        }
-        //Constructor Overloading for deep copy
-        public Canvas(Canvas other)
-        {
-            this.canvasId = other.canvasId;
-            this.ShapeCount = other.ShapeCount;
-            shapes = new Shape[10];
-            for (int i = 0; i < ShapeCount; i++)
-            {
-                this.shapes[i] = other.shapes[i];
-            }
-        } 
-        public void AddShape(Shape shape)
-        {
-            if (ShapeCount < shapes.Length)
-            {
-                shapes[ShapeCount++] = shape;
+                QuantityinStock = quantityinStock;
             }
             else
             {
-                Console.WriteLine("List full");
+
+                Console.WriteLine("Make sure Quantity in Stock should be in the range 0 - 100");
+                QuantityinStock = 0;
             }
+
+
         }
-        public void DisplayShapes()
+
+
+        //public product(int productId, string Name, decimal price, int quantityinStock)
+        //{
+        //    ProductId = productId;
+        //    this.Name = Name;
+        //    Price = price;
+        //   CheckQuantityinStock(quantityinStock);
+
+        //}
+        // 3 Appraoch Contructor Chaining
+
+        //public product(int productId, string Name, decimal price) : this(productId, Name, price, 0)
+        //{
+        //    // No need to add anything
+        //}
+        //public product(int productId, int quantityinStock) : this(productId, "", 0, quantityinStock)
+        //{
+        //    // No need to add anything
+        //}
+        //public product() : this(0, "", 0, 0)
+        //{
+        //    // No need to add anything
+        //}
+        //public product(int productId, string Name) : this(productId, Name, 0, 0)
+        //{
+        //    // No need to add anything
+        //}
+        //**********************Done Method 03
+
+        //4 Approach Default values
+        public product(int productId = 0, string Name = "", decimal price = 0, int quantityinStock = 0)
         {
-            Console.WriteLine($"All shapes in Canvas {canvasId} are: ");
-            for (int i = 0;i < ShapeCount;i++)
+            ProductId = productId;
+            this.Name = Name;
+            Price = price;
+            CheckQuantityinStock(quantityinStock);
+
+        }
+        public void DisplayProductInfo()
+        {
+            Console.WriteLine($"Product ID = {ProductId},Name = {Name} Price = {Price}, Quantity = {QuantityinStock} ");
+        }
+        // Destructor
+        ~product()
+        {
+            Console.WriteLine($"Product Having ID {ProductId} is killed");
+        }
+        public class Store
+        {
+            public string StoreName;
+            public string Storelocation;
+            private product[] Products;
+            private int productCount;
+
+            //Constructor
+
+            public Store(string S_Name, string S_location)
             {
-                shapes[i].Draw();
+                StoreName = S_Name;
+                Storelocation = S_location;
+                Products = new product[10];
+                productCount = 0;
             }
-        }
-        ~Canvas()
-        {
-            Console.WriteLine($"Objects of canvas {canvasId} is killed");
-           
-        }
+
+            //Method
+
+            public void AddProductinStore(product Product)
+            {
+                if (productCount < Products.Length)
+                {
+                    Products[productCount++] = Product;
+                }
+                else
+                {
+                    Console.WriteLine("Not add products");
+                }
+            }
+            public void DisplayAllProducts()
+            {
+                Console.WriteLine($"All Inventory of the store {StoreName} at location {Storelocation} is here");
+                foreach (var Dummy_Product in Products)
+                {
+                    if(Dummy_Product!=null)
+                    Dummy_Product.DisplayProductInfo();
+                }
+            }
+            ~Store()
+            {
+                Console.WriteLine("stored Application Closed");
+            }
         }
         internal class Program
         {
             static void Main(string[] args)
             {
-            Shape s1 = new Shape(1,"Circle","Red");
-            Shape s2 = new Shape(2,"Triangle ","Yellow");
-            Shape Original_Shape = new Shape(3, "Square", "Blue");
+                product p1= new product();  //Default
+                product p2= new product(1,"camera",25.5m,10);//All Values
+                product p3 = new product(2, "Mouse", 10.23m); //No Quantity in Stock 4 Apprach Default Values
+                product p4 = new product(3,"",0, 23);//No name and No price 3 Approach
+                product p5 = new product(4, "Keyboard"); //Only iD and name
 
-            //Shallow
-            Shape Shallow_Shape=Original_Shape;
+                Store store = new Store("Zeenat","FSD");
+                store.AddProductinStore(p1);    
+                store.AddProductinStore(p2);
+                store.AddProductinStore(p3);
+                store.AddProductinStore(p4);
+                store.AddProductinStore(p5);
 
-            //Deep
-            Shape Deep_Shape = new Shape(Original_Shape);
-            //Before Changes
-            Console.WriteLine("Before Changes");
-            Original_Shape.Draw();
+                store.DisplayAllProducts();
+                Console.ReadLine();
 
-            Console.WriteLine("Shallow copy Changes shapes");
-            Shallow_Shape.Draw();
+                Console.WriteLine("Here we are killing objects");
 
-            Console.WriteLine("Deep Copy of Shapes");
-            Deep_Shape.Draw();
+                //How to Handle Destructor
+                p1 = null;
+                p2 = null;
+                p3 = null;
+                p4 = null;
+                p5 = null;
+                store = null;
 
-            //Changes Shape
+                //Run Garbage Value
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
 
-            Original_Shape.ID_of_Shape = 5;
-            Original_Shape.Type_of_Shape = "Cube";
-            Original_Shape.Colour_of_Shape = "White";
-
-            //After Changes
-            Console.WriteLine("**************************************************");
-            Console.WriteLine("After Changes");
-            Original_Shape.Draw();
-
-            Console.WriteLine("After Shallow copy Changes shapes");
-            Shallow_Shape.Draw();
-
-            Console.WriteLine("After Deep Copy of Shapes");
-            Deep_Shape.Draw();
-            Console.ReadLine();
-            Console.Clear();
-
-            //Canvas object
-            Canvas c1 =new Canvas(1);
-            Canvas Original_Canvas = new Canvas(2);
-
-            //Add Shapes
-            Original_Canvas.AddShape(s1);
-            Original_Canvas.AddShape(s2);
-
-            //Shallow Copy
-            Canvas Shallow_Canvas = Original_Canvas;
-
-            //Deep Copy
-            Canvas Deep_Canvas = new Canvas(Original_Canvas);
-
-            //Display
-            Console.WriteLine("Original Values");
-            Original_Canvas.DisplayShapes();
-
-            Console.WriteLine("Shallow Canvas befor Changes");
-            Shallow_Canvas.DisplayShapes();
-        
-            Console.WriteLine("Deep Canvas befor Changes");
-            Deep_Canvas.DisplayShapes();
-
-            //Changes
-            Original_Canvas.ID_of_canvas = 15;
-            Original_Canvas.AddShape(Original_Shape);
-
-            //Display
-            Console.WriteLine("**********************************************");
-            Console.WriteLine("Original Values After Changes ");
-            Original_Canvas.DisplayShapes();
-
-           
-            Console.WriteLine("Shallow Canvas After Changes");    
-            Shallow_Canvas.DisplayShapes();
-
-            Console.WriteLine("Deep Canvas After Changes");       
-            Deep_Canvas.DisplayShapes();
-
-            Console.ReadLine();
-        }
-
+            }
         }
     }
+}
